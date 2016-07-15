@@ -1,0 +1,7 @@
+*.log
+.DS_Store
+node_modules/
+.idea
+.tern-project
+public/js/
+public/css/

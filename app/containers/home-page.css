@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content {
+  display: flex;
+  flex-grow: 1;
+
+  // needed to enable scrolling in firefox
+  overflow: auto;
+
+  // enable absolutely positioned child component (preview drawer)
+  position: relative;
+}

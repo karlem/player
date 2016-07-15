@@ -1,0 +1,19 @@
+.menu {
+  position:        relative;
+  display:         flex;
+  flex-direction:  row;
+  justify-content: space-around;
+
+  padding:         5px 0;
+
+  font-size:       13px;
+  color:           #a5a5a5;
+}
+
+.item {
+  cursor: pointer;
+}
+
+.selected {
+  color: #00fafa;
+}

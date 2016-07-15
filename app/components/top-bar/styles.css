@@ -1,0 +1,10 @@
+.topBar {
+  position:         relative;
+  display:          flex;
+  flex-direction:   row;
+  justify-content:  space-between;
+
+  height:           54px;
+  padding:          5px;
+  background-color: #1c1c1c;
+}
