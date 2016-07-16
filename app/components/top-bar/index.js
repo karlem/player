@@ -4,33 +4,21 @@ import styles from './styles.css';
 
 export default class TopBar extends Component {
 
-  _onClick () {
-    // prepare the request
-    var request = gapi.client.youtube.search.list({
-      part: "snippet",
-      type: "video",
-      q: encodeURIComponent(this.refs.input.value).replace(/%20/g, "+"),
-      maxResults: 20,
-      order: "viewCount",
-      publishedAfter: "2015-01-01T00:00:00Z"
-    });
-    // execute the request
-    request.execute(function(response) {
-      var results = response.result;
-
-      window.hackCall(results);
-    });
-  }
+  _onSubmit = () => (
+    this.props.searchItems(this.refs.input.value)
+  );
 
   render() {
+    const isSearchDisabled = this.props.areApisLoaded === false;
+
     return (
       <div className={styles.topBar}>
         <span>Show menu</span>
         <p>My Music</p>
         <div>
-          <form onSubmit={() => this._onClick()}>
-            <input ref="input" type="text" />
-            <button>Search</button>
+          <form onSubmit={this._onSubmit}>
+            <input disabled={isSearchDisabled} ref="input" type="text" />
+            <button disabled={isSearchDisabled}>Search</button>
           </form>
         </div>
       </div>

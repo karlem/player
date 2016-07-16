@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as MenuActions from '../actions/menu';
+
+import * as allActions from '../actions/index';
 
 import styles from './home-page.css';
 
@@ -13,19 +14,9 @@ export default class HomePage extends Component {
   state = {};
 
   componentDidMount () {
-    const tag            = document.createElement('script');
-    tag.src              = "https://apis.google.com/js/client.js?onload=init";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    const tag2           = document.createElement('script');
-    tag2.src              = "https://www.youtube.com/iframe_api";
-    const firstScriptTag2 = document.getElementsByTagName('script')[0];
-    firstScriptTag2.parentNode.insertBefore(tag, firstScriptTag2);
-
     // Listener for loaded data from api call
     window.hackCall = (data) => {
-      this.setState({ items: data.items});
+      this.setState({items: data.items});
     };
   }
 
@@ -54,13 +45,21 @@ export default class HomePage extends Component {
     this.player.loadVideoById(videoId);
   }
 
-  _renderList () {
-    if (!Array.isArray(this.state.items)) {
-      return <p>Loading....</p>;
+  _renderList (isSearching, items) {
+    const hasNoItems = (
+      Array.isArray(items) === false ||
+      items.length === 0
+    );
+
+    if (hasNoItems && isSearching) {
+      return <p>Searching...</p>;
     }
 
+    if (hasNoItems) {
+      return <p>No songs.</p>;
+    }
 
-    return this.state.items.map((item, key) => {
+    return items.map((item, key) => {
       return (
         <div onClick={() => this._playVideo(item.id.videoId)} className={styles.item} key={key}>
           <p>{item.snippet.title}</p>
@@ -71,11 +70,16 @@ export default class HomePage extends Component {
   }
 
   render () {
+    const { apis, search, searchItems } = this.props;
+
     return (
       <div className={styles.container}>
-        <TopBar />
+        <TopBar
+          searchItems={searchItems}
+          areApisLoaded={apis.areAllLoaded}/>
+
         <div className={styles.content}>
-          {this._renderList()}
+          {(apis.areAllLoaded) ? this._renderList(search.isSearching, search.items) : <p>Connection to APIs</p>}
         </div>
         <div id="player"></div>
       </div>
@@ -83,14 +87,14 @@ export default class HomePage extends Component {
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    menu: state.menu
-  };
-}
+const mapStateToProps = (state) => ({
+  menu:   state.menu,
+  search: state.search,
+  apis:   state.apis
+});
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators(MenuActions, dispatch);
-}
+const mapDispatchToProps = (dispatch) => (
+  bindActionCreators(allActions, dispatch)
+);
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
